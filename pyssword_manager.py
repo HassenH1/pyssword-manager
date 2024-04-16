@@ -30,8 +30,9 @@ class AddWindow(QWidget):
     will appear as a free-floating window as we want.
     """
 
-    def __init__(self):
+    def __init__(self, data: list):
         super().__init__()
+        self.mock_data = data
         self.setWindowTitle("Add new password")
 
         layout = QVBoxLayout()
@@ -42,15 +43,15 @@ class AddWindow(QWidget):
         self.siteName.setContentsMargins(0, 20, 0, 0)
         layout.addWidget(self.siteName)
 
-        siteEdit = QLineEdit()
-        layout.addWidget(siteEdit)
+        self.siteEdit = QLineEdit()
+        layout.addWidget(self.siteEdit)
 
         self.username = QLabel("Username")
         self.username.setContentsMargins(0, 10, 0, 0)
         layout.addWidget(self.username)
 
-        usernameEdit = QLineEdit()
-        layout.addWidget(usernameEdit)
+        self.usernameEdit = QLineEdit()
+        layout.addWidget(self.usernameEdit)
 
         self.password = QLabel("Password")
         self.password.setContentsMargins(0, 10, 0, 0)
@@ -83,6 +84,16 @@ class AddWindow(QWidget):
     @pyqtSlot()
     def saveNewPassword(self):
         # TODO add to array here
+        tuple = (
+            self.siteEdit.text(),
+            self.usernameEdit.text(),
+            self.passwordEdit.text(),
+            "",
+            "",
+            "",
+        )
+        self.mock_data.append(tuple)
+        print(self.mock_data, "<-----what is this?")
         self.close()
 
     @pyqtSlot()
@@ -91,7 +102,6 @@ class AddWindow(QWidget):
         # get random string of letters and digits
         source = string.ascii_letters + string.digits
         result_str = "".join((random.choice(source) for i in range(15)))
-        print("result_str: ", result_str)
         self.passwordEdit.setText(result_str)
 
     @pyqtSlot()
@@ -176,7 +186,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def addButtonWasClicked(self):
         if self.w is None:
-            self.w = AddWindow()
+            self.w = AddWindow(self.mock_data)
             self.w.show()
         else:
             self.w.close()
@@ -188,10 +198,11 @@ class MainWindow(QMainWindow):
         clipboard.setText(self.mock_data[row][col])
 
 
-app = QApplication(sys.argv)
-window = MainWindow()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
 
-# Show the parent Widget
-window.show()
-# Run the main Qt loop
-sys.exit(app.exec())
+    # Show the parent Widget
+    window.show()
+    # Run the main Qt loop
+    sys.exit(app.exec())
