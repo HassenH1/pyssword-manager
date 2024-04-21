@@ -16,6 +16,7 @@ from PyQt6.QtWidgets import (
     QApplication,
 )
 from PyQt6.QtCore import QSize, Qt, pyqtSlot
+from db import Database
 import random
 import string
 
@@ -32,6 +33,7 @@ class AddWindow(QWidget):
 
     def __init__(self, data: list):
         super().__init__()
+        # self.db = Database()
         self.mock_data = data
         self.setWindowTitle("Add new password")
 
@@ -112,17 +114,38 @@ class AddWindow(QWidget):
 class MainWindow(QMainWindow):
     header_names = ["Site", "Username", "Password", "Created", "Last modified", ""]
     mock_data = [
-        ("Google", "Hasan", "password1", "04-07-2024", "", ""),
-        ("Apple", "Hassen", "password122", "04-01-2000", "", ""),
-        ("Windows", "Hasen", "password133", "04-05-2024", "", ""),
-        (
-            "loooooooooooooooong strinnnnnnnnnnnnnnnnng",
-            "Haseen",
-            "password13355",
-            "04-05-2024",
-            "04-07-2024",
-            "",
-        ),
+        {
+            "site": "Google",
+            "username": "Hasan",
+            "password": "password1",
+            "created_date": "04-07-2024",
+            "modified_date": "",
+            "delete_icon": "",
+        },
+        {
+            "site": "Apple",
+            "username": "Hassen",
+            "password": "password122",
+            "created_date": "04-01-2000",
+            "modified_date": "",
+            "delete_icon": "",
+        },
+        {
+            "site": "Windows",
+            "username": "Hasen",
+            "password": "password133",
+            "create_date": "04-05-2024",
+            "modified_date": "",
+            "delete_icon": "",
+        },
+        {
+            "site": "loooooooooooooooong strinnnnnnnnnnnnnnnnng",
+            "username": "Haseen",
+            "password": "password13355",
+            "create_date": "04-05-2024",
+            "modified_date": "04-07-2024",
+            "delete_icon": "",
+        },
     ]
 
     def __init__(self):
@@ -152,11 +175,11 @@ class MainWindow(QMainWindow):
         tableWidget.setAlternatingRowColors(True)
 
         for row, (list) in enumerate(self.mock_data):
-            for col, (item) in enumerate(list):
-                item_name = QTableWidgetItem(item)
+            for col, (key, value) in enumerate(list.items()):
+                item_name = QTableWidgetItem(value)
                 item_name.setFlags(Qt.ItemFlag.ItemIsEnabled)
 
-                if col == len(self.mock_data[row]) - 1:
+                if key == "delete_icon":
                     pixmapi = QStyle.StandardPixmap.SP_MessageBoxCritical
                     icon = self.style().standardIcon(pixmapi)
                     item_name.setIcon(icon)
@@ -201,8 +224,5 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
-
-    # Show the parent Widget
     window.show()
-    # Run the main Qt loop
     sys.exit(app.exec())
